@@ -1,0 +1,12 @@
+{
+  "name": "deadlock-stats-info",
+  "version": "1.0.0",
+  "description": "Chrome extension for Deadlock API hero lookups, comparisons, and item data",
+  "scripts": {
+    "build": "echo 'Extension ready for loading in Chrome'",
+    "test": "echo 'No tests defined'"
+  },
+  "keywords": ["chrome-extension", "deadlock", "game-stats"],
+  "author": "",
+  "license": "MIT"
+  }

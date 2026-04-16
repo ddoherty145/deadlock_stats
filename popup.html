@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deadlock Stats Info</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Deadlock Stats</h1>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab active" data-tab="lookup">Lookup</button>
+      <button class="tab" data-tab="compare">Compare</button>
+      <button class="tab" data-tab="items">Items</button>
+    </nav>
+
+    <main>
+      <!-- Lookup Section -->
+      <section id="lookup-section" class="section active">
+        <div class="search-box">
+          <input type="text" id="hero-search" placeholder="Enter hero name..." autocomplete="off">
+          <button id="search-btn">Search</button>
+        </div>
+        <div id="lookup-result" class="result"></div>
+      </section>
+
+      <!-- Compare Section -->
+      <section id="compare-section" class="section">
+        <div class="compare-box">
+          <input type="text" id="hero1-input" placeholder="First hero (e.g., Infernus)">
+          <span class="vs">VS</span>
+          <input type="text" id="hero2-input" placeholder="Second hero (e.g., Haze)">
+          <button id="compare-btn">Compare</button>
+        </div>
+        <div id="compare-result" class="result"></div>
+      </section>
+
+      <!-- Items Section -->
+      <section id="items-section" class="section">
+        <div class="items-search-box">
+          <input type="text" id="items-hero-input" placeholder="Enter hero name...">
+          <button id="items-search-btn">Show Items</button>
+        </div>
+        <div id="items-result" class="result"></div>
+      </section>
+    </main>
+
+    <div id="error-message" class="error-message hidden"></div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
