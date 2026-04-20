@@ -29,6 +29,9 @@ const itemsResult = document.getElementById('items-result');
 // Error message
 const errorMessage = document.getElementById('error-message');
 
+// Theme toggle
+const themeToggle = document.getElementById('theme-toggle');
+
 // Tab switching
 tabs.forEach(tab => {
   tab.addEventListener('click', () => {
@@ -46,7 +49,7 @@ tabs.forEach(tab => {
 
 // Show error message
 function showError(message) {
-  errorMessage.textContent = message;
+  errorMessage.innerHTML = `<span class="error-icon">&#9888;</span> ${message}`;
   errorMessage.classList.remove('hidden');
   setTimeout(() => {
     errorMessage.classList.add('hidden');
@@ -318,12 +321,17 @@ function renderItems(hero, items) {
 searchBtn.addEventListener('click', async () => {
   const heroName = heroSearch.value.trim();
   if (!heroName) {
-    showError('Please enter a hero name');
+    showError('Please enter a hero name to search');
     return;
   }
 
   searchBtn.disabled = true;
-  lookupResult.innerHTML = '<div class="loading">Loading...</div>';
+  lookupResult.innerHTML = `
+    <div class="loading">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Searching for ${heroName}...</div>
+    </div>
+  `;
 
   const result = await fetchHeroData(heroName);
   searchBtn.disabled = false;
@@ -331,7 +339,9 @@ searchBtn.addEventListener('click', async () => {
   if (result.error) {
     lookupResult.innerHTML = '<div class="no-data">' + result.error + '</div>';
     if (result.error.includes('connection')) {
-      showError(result.error);
+      showError('Unable to connect to Deadlock API. Please check your internet connection.');
+    } else if (result.error.includes('not found')) {
+      showError('Hero not found. Please check the spelling and try again.');
     }
   } else {
     renderHeroLookup(result.hero);
@@ -344,12 +354,17 @@ compareBtn.addEventListener('click', async () => {
   const hero2 = hero2Input.value.trim();
 
   if (!hero1 || !hero2) {
-    showError('Please enter both hero names');
+    showError('Please enter both hero names to compare');
     return;
   }
 
   compareBtn.disabled = true;
-  compareResult.innerHTML = '<div class="loading">Loading...</div>';
+  compareResult.innerHTML = `
+    <div class="loading">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Fetching matchup data...</div>
+    </div>
+  `;
 
   const result = await fetchMatchupData(hero1, hero2);
   compareBtn.disabled = false;
@@ -357,7 +372,11 @@ compareBtn.addEventListener('click', async () => {
   if (result.error) {
     compareResult.innerHTML = '<div class="no-data">' + result.error + '</div>';
     if (result.error.includes('connection')) {
-      showError(result.error);
+      showError('Unable to connect to Deadlock API. Please check your internet connection.');
+    } else if (result.error.includes('not found')) {
+      showError('One or both heroes not found. Please check spelling and try again.');
+    } else if (result.error.includes('matchup data')) {
+      showError('No matchup data available. These heroes may not have enough recorded games.');
     }
   } else {
     renderComparison(result.matchup, result.hero1Name, result.hero2Name);
@@ -368,12 +387,17 @@ compareBtn.addEventListener('click', async () => {
 itemsSearchBtn.addEventListener('click', async () => {
   const heroName = itemsHeroInput.value.trim();
   if (!heroName) {
-    showError('Please enter a hero name');
+    showError('Please enter a hero name to view items');
     return;
   }
 
   itemsSearchBtn.disabled = true;
-  itemsResult.innerHTML = '<div class="loading">Loading...</div>';
+  itemsResult.innerHTML = `
+    <div class="loading">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Loading item data for ${heroName}...</div>
+    </div>
+  `;
 
   const result = await fetchItemsData(heroName);
   itemsSearchBtn.disabled = false;
@@ -381,7 +405,9 @@ itemsSearchBtn.addEventListener('click', async () => {
   if (result.error) {
     itemsResult.innerHTML = '<div class="no-data">' + result.error + '</div>';
     if (result.error.includes('connection')) {
-      showError(result.error);
+      showError('Unable to connect to Deadlock API. Please check your internet connection.');
+    } else if (result.error.includes('not found')) {
+      showError('Hero not found. Please check the spelling and try again.');
     }
   } else {
     renderItems(result.hero, result.items);
@@ -404,3 +430,25 @@ hero2Input.addEventListener('keypress', (e) => {
 itemsHeroInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') itemsSearchBtn.click();
 });
+
+// Theme toggle functionality
+const THEME_KEY = 'deadlock-stats-theme';
+
+// Initialize theme from localStorage or default to dark
+const savedTheme = localStorage.getItem(THEME_KEY) || 'dark';
+document.documentElement.setAttribute('data-theme', savedTheme);
+updateThemeIcon(savedTheme);
+
+themeToggle.addEventListener('click', () => {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem(THEME_KEY, newTheme);
+  updateThemeIcon(newTheme);
+});
+
+function updateThemeIcon(theme) {
+  // Sun icon for light mode, moon icon for dark mode
+  themeToggle.innerHTML = theme === 'light' ? '&#9790;' : '&#9728;';
+}
