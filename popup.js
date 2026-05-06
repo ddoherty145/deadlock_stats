@@ -452,3 +452,23 @@ function updateThemeIcon(theme) {
   // Sun icon for light mode, moon icon for dark mode
   themeToggle.innerHTML = theme === 'light' ? '&#9790;' : '&#9728;';
 }
+
+// --- Clipboard Export (V1.3) ---
+
+function formatHeroForClipboard(hero) {
+  const winRate = hero.winRate ?? 'N/A';
+  const matches = hero.matches ?? 'N/A';
+  return `${hero.name} | Win Rate: ${winRate}% | Matches: ${matches}`;
+}
+
+function formatComparisonForClipboard(hero1, hero2, winrate) {
+  const winner = parseFloat(winrate) > 50 ? hero1 : hero2;
+  return `${hero1} vs ${hero2} | ${hero1} winrate: ${winrate}% | Favors: ${winner}`;
+}
+
+async function copyToClipboard(text) {
+  if (!navigator.clipboard) {
+    return { error: 'Clipboard not available' };
+  }
+  await navigator.clipboard.writeText(text);
+}
