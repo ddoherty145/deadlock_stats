@@ -18,6 +18,7 @@
   },
   "permissions": [],
   "host_permissions": [
-    "https://deadlock-api.com/*"
+    "https://api.deadlock-api.com/*",
+    "https://assets.deadlock-api.com/*"
   ]
 }
