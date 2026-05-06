@@ -98,14 +98,12 @@ function findHeroByName(heroes, heroName) {
 // Fetch hero stats from analytics API
 async function fetchHeroStats(heroId) {
   try {
-    const response = await fetch(
-      `${API_BASE}/v1/analytics/hero-stats?hero_id=${heroId}&min_matches=100`
-    );
+    const response = await fetch(`${API_BASE}/v1/analytics/hero-stats`);
     if (!response.ok) {
       return null;
     }
     const data = await response.json();
-    return data[0] || null;
+    return data.find(s => s.hero_id === heroId) || null;
   } catch (error) {
     return null;
   }
@@ -126,15 +124,17 @@ async function fetchHeroData(heroName) {
 
     // Calculate winrate from wins and losses (API doesn't return winrate directly)
     let winRate = null;
-    if (stats && stats.wins && stats.losses) {
+    let pickRate = null;
+    if (stats && stats.matches > 0) {
       winRate = ((stats.wins / (stats.wins + stats.losses)) * 100).toFixed(1);
+      pickRate = (stats.matches / 1000).toFixed(1);
     }
 
     return {
       hero: {
         ...hero,
-        winRate: winRate,
-        pickRate: stats ? ((stats.matches / 1000).toFixed(1)) : null,
+        winRate,
+        pickRate,
         portrait: hero.images?.icon_image_small || hero.images?.icon_hero_card
       }
     };
