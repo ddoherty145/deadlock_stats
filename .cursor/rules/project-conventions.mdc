@@ -1,0 +1,42 @@
+---
+description: Core coding conventions and custom commands for Dead Stats Chrome extension
+alwaysApply: true
+---
+
+# Dead Stats — Project Conventions
+
+## JS Patterns
+
+- Use `async/await` for all API calls; never raw `.then()` chains
+- Return `{ error: 'message' }` objects from data functions — never throw to the UI layer
+- Cache the heroes list in a module-level variable (`let cachedHeroes = null`)
+- All DOM manipulation lives in `popup.js`; no inline scripts in HTML
+
+## Error Handling
+
+```js
+// ✅ GOOD — always catch network failures separately
+try {
+  const res = await fetch(url);
+  if (!res.ok) return { error: `API error ${res.status}` };
+  return await res.json();
+} catch {
+  return { error: 'Unable to fetch stats – check your connection' };
+}
+
+// ❌ BAD — letting errors bubble to the UI
+const data = await fetch(url).then(r => r.json());
+```
+
+## Quality Gates
+
+Before marking any feature done, all gates in `spec.md` must pass. Run:
+```bash
+npm test && npm run build
+```
+
+## Custom Commands
+
+- `/task` — Break the request into a numbered todo list before writing any code. Use for anything touching 2+ files.
+- `/fast` — Skip planning; implement the simplest solution immediately. Use for single-line fixes.
+- `/remember` — Append the key decision or fact to CLAUDE.md under a "Session Notes" heading.

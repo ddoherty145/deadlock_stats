@@ -53,6 +53,42 @@
 
 ---
 
+## Complexity Level 3 Task: Architectural / Cross-Cutting Change
+**Task:** Swap data layer to use a persistent background service worker with IndexedDB caching
+
+### Approach Used: Design-Doc-First
+1. Write a short design doc (problem, options considered, chosen approach, rollback plan)
+2. Get review/sign-off on the design before touching any code
+3. Create a feature branch
+4. Write tests for the new architecture (TDD red phase) and commit them
+5. Implement in layers: data layer first, then UI adapters, then integration
+6. Run full quality gate suite (Gates 1–5 in spec.md) before merging
+7. Update spec.md and CLAUDE.md to reflect any new constraints
+
+### Files Modified (example):
+- `manifest.json` - Add `background` service worker declaration
+- `background.js` - New service worker with IndexedDB logic
+- `popup.js` - Replace direct fetch calls with `chrome.runtime.sendMessage`
+- `__tests__/background.test.js` - New test file (committed before implementation)
+
+### Design Decisions to Document:
+1. **Why IndexedDB vs localStorage?** Size limits and async API
+2. **Message passing protocol** between popup and service worker
+3. **Cache invalidation strategy** (TTL, version key, etc.)
+4. **Fallback behaviour** when service worker is unavailable
+
+### Workflow Steps:
+1. Open a GitHub/Linear issue describing the change
+2. Write and commit a design note in `docs/design-<feature>.md`
+3. Create branch: `feat/background-service-worker`
+4. Commit failing tests (TDD red)
+5. Implement in small, reviewable commits
+6. Run `npm test && npm run build`
+7. Open PR, reference the design doc and spec gates
+8. Merge only after all gates pass
+
+---
+
 ## Test Coverage
 All changes were tested using:
 - `npm test` - Jest unit tests

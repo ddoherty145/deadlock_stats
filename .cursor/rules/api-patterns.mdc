@@ -1,0 +1,47 @@
+---
+description: Deadlock API fetch patterns and data transformation conventions
+globs: popup.js
+alwaysApply: false
+---
+
+# Deadlock API Patterns
+
+## Base URL
+
+```js
+const API_BASE = 'https://api.deadlock-api.com';
+```
+
+## Endpoints
+
+| Endpoint | Purpose |
+|----------|---------|
+| `GET /v2/heroes` | Hero metadata (names, portraits) |
+| `GET /v1/analytics/hero-stats?hero_id=<id>` | Win/loss counts |
+| `GET /v1/analytics/hero-comb-stats?hero_id1=<id>&hero_id2=<id>` | Head-to-head matchup |
+| `GET /v1/analytics/build-item-stats?hero_id=<id>` | Most-taken items |
+
+## Hero Filtering
+
+Only show heroes that are player-selectable and not in development:
+```js
+const playable = heroes.filter(h => h.player_selectable && !h.in_development);
+```
+
+## Winrate Calculation
+
+```js
+// From hero-stats response
+const winRate = ((stats.wins / (stats.wins + stats.losses)) * 100).toFixed(1);
+```
+
+## Portrait URL
+
+```js
+const portrait = hero.images?.icon_image_small ?? '';
+```
+
+## Known Limitations
+
+- Matchup data requires ≥ 50 matches; API returns empty array otherwise
+- No per-hero item winrate data is available — only pick frequency

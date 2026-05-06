@@ -1,0 +1,39 @@
+---
+description: Test-first development rules — always write a failing test before implementation
+alwaysApply: true
+---
+
+# TDD Workflow
+
+Every new behaviour must follow the red → green → refactor cycle.
+
+## Cycle
+
+1. **Red** — Write a failing test that describes the desired behaviour. Commit with message: `test: <feature> failing test (TDD red)`
+2. **Green** — Write the minimum code to make the test pass. Commit: `feat: <feature> implementation (TDD green)`
+3. **Refactor** — Clean up without breaking tests. Commit: `refactor: <feature>`
+
+## Test File Location
+
+```
+__tests__/<featureName>.test.js       # unit tests
+__tests__/<featureName>.integration.test.js  # integration tests
+```
+
+## Minimal Test Structure
+
+```js
+describe('<FeatureName>', () => {
+  it('should <expected behaviour>', () => {
+    // Arrange
+    // Act
+    // Assert
+  });
+});
+```
+
+## Rules
+
+- Never commit implementation code without a corresponding test commit that came first
+- Tests must reference the AC they cover: `// Covers AC-X`
+- `npm test` must pass before any feature is considered complete
